@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ !-n $1 ];then
+if [ ! -n $1 ];then
 	echo "usage: ./release.sh v1.0.0"
 	exit
 fi
