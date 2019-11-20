@@ -64,11 +64,23 @@ public class Controller implements Initializable {
 
 	public void initialize(URL location, ResourceBundle resources) {
 		configHolder = new ConfigHolder();
-		logger.info("initialize tree view");
-		TreeItem<DeletingFile> rootItem = new TreeItem<> (new DeletingFile("/"));
-		rootItem.setExpanded(true);
-		tree.setRoot(rootItem);
-		addItem(rootItem);
+		final List<File> roots = Arrays.asList(File.listRoots());
+		logger.info("initialize tree view root files : {}", roots);
+		if(roots.size() == 1) {
+			TreeItem<DeletingFile> rootItem = new TreeItem<>(new DeletingFile("/"));
+			rootItem.setExpanded(true);
+			tree.setRoot(rootItem);
+			addItem(rootItem);
+		}else{
+			TreeItem<DeletingFile> rootItem = new TreeItem<>();
+			rootItem.setExpanded(true);
+			tree.setRoot(rootItem);
+			for (File root : roots) {
+				final TreeItem<DeletingFile> treeItem = new TreeItem<>(new DeletingFile(root.getPath()));
+				rootItem.getChildren().add(treeItem);
+				addItem(treeItem);
+			}
+		}
 		logger.info("initialize tree view ok.");
 
 		final MenuItem deepCalcItem = new MenuItem("自动展开");

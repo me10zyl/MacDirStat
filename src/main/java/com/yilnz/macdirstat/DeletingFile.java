@@ -90,6 +90,9 @@ public class DeletingFile extends HBox {
 		if (file.getPath().equals("/")) {
 			return "/";
 		}
+		if(file.getName().equals("")){
+			return file.getPath();
+		}
 		return file.getName();
 	}
 }
