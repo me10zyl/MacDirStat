@@ -65,6 +65,7 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		configHolder = new ConfigHolder();
 		final List<File> roots = Arrays.asList(File.listRoots());
+		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		logger.info("initialize tree view root files : {}", roots);
 		if(roots.size() == 1) {
 			TreeItem<DeletingFile> rootItem = new TreeItem<>(new DeletingFile("/"));
@@ -75,6 +76,7 @@ public class Controller implements Initializable {
 			TreeItem<DeletingFile> rootItem = new TreeItem<>();
 			rootItem.setExpanded(true);
 			tree.setRoot(rootItem);
+			tree.setShowRoot(false);
 			for (File root : roots) {
 				final TreeItem<DeletingFile> treeItem = new TreeItem<>(new DeletingFile(root.getPath()));
 				rootItem.getChildren().add(treeItem);
@@ -83,17 +85,15 @@ public class Controller implements Initializable {
 		}
 		logger.info("initialize tree view ok.");
 
-		final MenuItem deepCalcItem = new MenuItem("自动展开");
+		final MenuItem deepCalcItem = new MenuItem("全部展开");
+		final MenuItem refreshItem = new MenuItem("刷新");
 		final MenuItem deleteMenuItem = new MenuItem("删除");
-		final MenuItem[] items = new MenuItem[]{deepCalcItem, deleteMenuItem};
+		final MenuItem[] items = new MenuItem[]{refreshItem, deepCalcItem, deleteMenuItem};
 		deepCalcItem.setOnAction(new SelectEventHandler(e->{
-			//final ArrayList<TreeItem<DeletingFile>> all = new ArrayList<>();
 			expandAll(e);
-			/*traverse(e, a -> {
-				a.getValue().calcDirSize();
-				a.getValue().update();
-			});*/
 		}));
+
+		refreshItem.setOnAction(new SelectEventHandler(this::refresh));
 		deleteMenuItem.setOnAction(e->{
 			final ObservableList<TreeItem<DeletingFile>> selectedItems = tree.getSelectionModel().getSelectedItems();
 			if (selectedItems.size() > 0) {
@@ -108,17 +108,27 @@ public class Controller implements Initializable {
 				if (alert.getResult() == ButtonType.YES) {
 					for (TreeItem<DeletingFile> selectedItem : selectedItems) {
 						try {
+							logger.info("deleting " + selectedItem.getValue().getFile().getPath());
 							FileDirUtil.deleteFileAndDir(selectedItem.getValue().getFile());
-							selectedItem.getParent().getChildren().remove(selectedItem);
+							//selectedItem.getParent().getChildren().remove(selectedItem);
+							//refresh(selectedItem.getParent());
 						} catch (IOException e1) {
 							new Alert(Alert.AlertType.ERROR, "删除失败:" + e1.toString()).showAndWait();
 						}
 
 					}
+					refresh(selectedItems.get(0).getParent());
 				}
 			}
 		});
 		tree.setContextMenu(new ContextMenu(items));
+	}
+
+	private void refresh(TreeItem<DeletingFile> e) {
+		e.setExpanded(false);
+		e.getChildren().clear();
+		e.getChildren().add(new TreeItem<>());
+		e.setExpanded(true);
 	}
 
 	private void handleItem(TreeItem<DeletingFile> item){
