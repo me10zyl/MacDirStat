@@ -10,9 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Set up JDK 1.8
-      uses: airsquared/setup-java@master
+      uses: me10zyl/setup-java@master
       with:
         java-version: 1.8
         javafx: true
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn deploy -B -Dregistry=https://maven.pkg.github.com/me10zyl -Dtoken=GH_TOKEN
