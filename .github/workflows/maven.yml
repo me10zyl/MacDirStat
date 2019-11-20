@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Set up JDK 1.8
-      uses: actions/setup-java@master
+      uses: airsquared/setup-java@master
       with:
         java-version: 1.8
         javafx: true
