@@ -72,4 +72,7 @@ public class FileDirUtil {
 		return size;
 	}
 
+	public static long sizeOfDir(File directory) {
+		return sizeOfFile(directory, 0, Integer.MAX_VALUE);
+	}
 }

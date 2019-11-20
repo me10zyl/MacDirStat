@@ -14,15 +14,16 @@ public class DeletingFile extends HBox {
 	private File file;
 	private Long fileSize;
 	private boolean isFavorite;
+	private Label labelFileSize;
+	private Label labelFileName;
 
-	private final long RED_THRESHOLD = 500 * 1024;
+	private final long RED_THRESHOLD = 50 * 1024 * 1024; //50MB
 
 	public DeletingFile(String path) {
 		this.file = new File(path);
 		calcFileSize();
-
-		final Label labelFileName = new Label(fileNameString());
-		final Label labelFileSize = new Label(fileSizeString());
+		this.labelFileName = new Label(fileNameString());
+		this.labelFileSize = new Label(fileSizeString());
 		final Paint color = getFileNameColor();
 		if (color != null) {
 			labelFileName.setTextFill(color);
@@ -31,9 +32,13 @@ public class DeletingFile extends HBox {
 		if (color2 != null) {
 			labelFileSize.setTextFill(color2);
 		}
-		this.getChildren().addAll(labelFileSize);
-		this.getChildren().addAll(labelFileName);
+		this.getChildren().add(labelFileSize);
+		this.getChildren().add(labelFileName);
 		this.setAlignment(Pos.CENTER_LEFT);
+	}
+
+	public void update(){
+		labelFileSize.setText(fileSizeString());
 	}
 
 	public boolean isFavoriteDir(List<String> paths){
@@ -62,6 +67,12 @@ public class DeletingFile extends HBox {
 		}
 		if (file != null) {
 			this.fileSize = FileDirUtil.sizeOfFile(file, 1, 1);
+		}
+	}
+
+	public void calcDirSize(){
+		if (file != null) {
+			this.fileSize = FileDirUtil.sizeOfDir(file);
 		}
 	}
 
