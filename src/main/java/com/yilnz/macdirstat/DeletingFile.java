@@ -70,6 +70,9 @@ public class DeletingFile extends HBox {
 		}
 	}
 
+	/**
+	 * 计算文件夹大小（所有）
+	 */
 	public void calcDirSize(){
 		if (file != null) {
 			this.fileSize = FileDirUtil.sizeOfDir(file);
