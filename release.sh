@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ ! -n $1 ];then
+if [ "$#" -ne 1  ];then
 	echo "usage: ./release.sh v1.0.0"
-	exit
+	exit 1
 fi
 git add .
 git commit -am "1"
