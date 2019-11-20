@@ -5,7 +5,7 @@ if [ "$#" -ne 1  ];then
 	exit 1
 fi
 git add .
-git commit -am "1"
+git commit -am "$date"
 git push origin master
 git tag $1
 git push origin $1
